@@ -13,15 +13,19 @@ import { useEffect, useState } from 'react'
 
 const Page = () => {
   const { items, removeItem } = useCart()
-
   const router = useRouter()
 
   const { mutate: createCheckoutSession, isLoading } =
+   
     trpc.payment.createSession.useMutation({
       onSuccess: ({ url }) => {
         if (url) router.push(url)
       },
+    onError: (err) => {
+      console.error(err)
+    }
     })
+    
 
   const productIds = items.map(({ product }) => product.id)
 

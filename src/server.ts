@@ -33,7 +33,7 @@ export type WebhookRequest = IncomingMessage & {
 
 const start = async () => {
   const webhookMiddleware = bodyParser.json({
-    verify: (req: WebhookRequest, _: any,buffer: Buffer) => {
+    verify: (req: WebhookRequest, _, buffer) => {
       req.rawBody = buffer
     },
   })

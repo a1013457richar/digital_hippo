@@ -14,14 +14,13 @@ export const paymentRouter = router({
     .input(z.object({ productIds: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx
+      
       let { productIds } = input
-
       if (productIds.length === 0) {
         throw new TRPCError({ code: 'BAD_REQUEST' })
       }
 
       const payload = await getPayloadClient()
-
       const { docs: products } = await payload.find({
         collection: 'products',
         where: {
@@ -30,11 +29,9 @@ export const paymentRouter = router({
           },
         },
       })
-
       const filteredProducts = products.filter((prod) =>
         Boolean(prod.priceId)
       )
-
       const order = await payload.create({
         collection: 'orders',
         data: {
@@ -43,7 +40,6 @@ export const paymentRouter = router({
           user: user.id,
         },
       })
-
       const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
         []
 
@@ -55,7 +51,7 @@ export const paymentRouter = router({
       })
 
       line_items.push({
-        price: 'price_1OCeBwA19umTXGu8s4p2G3aX',
+        price: 'price_1OfgQNEYBKhBXfjQthXbLNE3',
         quantity: 1,
         adjustable_quantity: {
           enabled: false,
@@ -67,7 +63,7 @@ export const paymentRouter = router({
           await stripe.checkout.sessions.create({
             success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
             cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/cart`,
-            payment_method_types: ['card', 'paypal'],
+            payment_method_types: ['card'],
             mode: 'payment',
             metadata: {
               userId: user.id,
@@ -75,9 +71,10 @@ export const paymentRouter = router({
             },
             line_items,
           })
-
+          console.log(stripeSession)
         return { url: stripeSession.url }
       } catch (err) {
+        console.error(err); 
         return { url: null }
       }
     }),

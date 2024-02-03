@@ -91,7 +91,7 @@ exports.paymentRouter = (0, trpc_1.router)({
                             });
                         });
                         line_items.push({
-                            price: 'price_1OCeBwA19umTXGu8s4p2G3aX',
+                            price: 'price_1OfgQNEYBKhBXfjQthXbLNE3',
                             quantity: 1,
                             adjustable_quantity: {
                                 enabled: false,
@@ -103,7 +103,7 @@ exports.paymentRouter = (0, trpc_1.router)({
                         return [4 /*yield*/, stripe_1.stripe.checkout.sessions.create({
                                 success_url: "".concat(process.env.NEXT_PUBLIC_SERVER_URL, "/thank-you?orderId=").concat(order.id),
                                 cancel_url: "".concat(process.env.NEXT_PUBLIC_SERVER_URL, "/cart"),
-                                payment_method_types: ['card', 'paypal'],
+                                payment_method_types: ['card'],
                                 mode: 'payment',
                                 metadata: {
                                     userId: user.id,
@@ -113,9 +113,11 @@ exports.paymentRouter = (0, trpc_1.router)({
                             })];
                     case 5:
                         stripeSession = _b.sent();
+                        console.log(stripeSession);
                         return [2 /*return*/, { url: stripeSession.url }];
                     case 6:
                         err_1 = _b.sent();
+                        console.error(err_1);
                         return [2 /*return*/, { url: null }];
                     case 7: return [2 /*return*/];
                 }
