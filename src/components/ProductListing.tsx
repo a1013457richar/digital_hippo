@@ -38,6 +38,7 @@ const ProductListing = ({
       typeof image === 'string' ? image : image.url
     )
     .filter(Boolean) as string[]
+    console.log(validUrls)
 
   if (isVisible && product) {
     return (
